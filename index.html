@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <title>Word Tree</title>
+        <link type="text/css" rel="stylesheet" href="style.css"/> 
+        <script type="text/javascript" src="./jQuery-1.8.1.js" ></script>
+        <script type="text/javascript" src="./d3.v2.js"></script>
+        <script type="text/javascript" src="./d3.layout.js"></script>
+        <script type="text/javascript" src="./wordTree.js"></script>
+        <script type="text/javascript">
+            var data = [
+                {"name":"Protecting data privacy and mining statistical information from protected data are the essential issues in big data. Protecting data privacy through noise-multiplied data is one of approaches studied in the literature. This paper introduces the B-M L2014 Approach for estimating the density function of the original data based on micro noise-multiplied data.We show an application of the B-M L2014 Approach and demonstrates that the statistical information of the original data can be retrieved from their noise-multiplied data reasonably. The approach provides a new data mining technique for big data when data privacy is concerned.","value":3},
+                {"name":"Machine learning libraries are integral to a big data mining platform. There are three limitations on adopting current machine learning libraries in such a platform. First, these algorithms are not implemented for handling both online and offline big data analysis. Second, libraries exist in a variety of frameworks using different programming languages, which make it difficult in integrating several algorithms. Third, most machine learning libraries provides APIs for programming only, thus not user-friendly for those do not have a sufficient understanding of algorithms and those lack of programming skills. In this paper, we implement a comprehensive machine learning library including common algorithms and deep learning algorithms. We integrate this library at a platform level that allows both online and offline data analysis using this library. We further design a user-friendly portal that enables quick and agile data analysis practices. All of these form an Online-Offline Combined Big Data Mining Platform (OOBDP). We present a demonstration of big oil data analysis using this platform. We observe the that OOBDP can easily accommodate industrial requirement for adaptable data mining process, with personalized usage scenarios, and easy to use experiences.","value":6},
+                {"name":"The talent management is a fundamental mainstay in the operation of any organization, regardless to its action scope. Nowadays there are several informatics tools aimed on supporting assignment of work positions according to candidates' profile as well as the organization needs in specific areas. However, in the area of higher education assigning courses to teachers is a challenging task due to the complex relations that exist among the different actors involved in the process (schedules, educational contents, teachers' profiles, etc.). Likewise, an incorrect assignment of courses to teachers can generate problems such as higher economic costs in educational management or non-compliance with strategic management indicators. In view of the foregoing, in this paper we present the first stage of a recommender system to generate courses distribution in higher education. Our proposal relies on data mining techniques as well as several metrics that can be adjusted to generate different courses distributions/assignments. Our recommender system was put to test with 133000 real registers of an Ecuadorian university and the achieved results are encouraging.","value":1}
+            ];
+        </script>
+    </head>
+    <body>
+        <div class="main">
+        <div><span>Key word: </span><input id="search" value="text" />
+        <input id="searchButton" type="button" value="go" />
+        <div class="error" id="errorDiv">Nothing matches your search term. Please try something different</div>
+        </div>
+        <div id="results"></div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                //If someone hits enter then act as if they clicked the search button
+                $("#search").keyup(function(event){
+                    if(event.keyCode == 13){
+                        $("#searchButton").click();
+                    }
+                });
+
+                $("#searchButton").click(function() {
+                    updateTree($("#search").val());
+                });
+                         
+                //configure the tree visualisation
+                var tree = wordTree()
+                    .width($(window).width())
+                    .height($(window).height()-150)
+                    .maxResults(5)
+                    .margins([10,10,10,10])
+                    .onClick(function(d) { updateTree(d.cleanName); })
+                    .onDragEnd(function(d) { })
+                    .mouseoverText(function(d) { return d.name; })
+                    .maxDepth(10);
+
+                updateTree($("#search").val());
+                
+                function updateTree(searchTerm) {
+                    //update the search input box with the new searchTerm (in case this is called from the onClick event of one of the nodes
+                    $("#search").val(searchTerm);
+                    
+                    //Update the visualisation settings
+                    tree.searchTerm(searchTerm)
+                        .width($(window).width())
+                        .height($(window).height()-100);
+ 
+                    d3.select("#results")
+                        .datum(data)
+                        .call(tree);
+                }
+            });
+        </script>	
+        </div>
+    </body>
+</html>
